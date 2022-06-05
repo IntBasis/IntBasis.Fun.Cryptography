@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntBasis.Fun.Cryptography", "IntBasis.Fun.Cryptography\IntBasis.Fun.Cryptography.csproj", "{582BCF29-2166-4CE8-83FB-10A50DEE6408}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntBasis.Fun.Cryptography.Tests", "IntBasis.Fun.Cryptography.Tests\IntBasis.Fun.Cryptography.Tests.csproj", "{4CDF6E09-493D-4FD9-A9C4-A19BE146D75E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{582BCF29-2166-4CE8-83FB-10A50DEE6408}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{582BCF29-2166-4CE8-83FB-10A50DEE6408}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{582BCF29-2166-4CE8-83FB-10A50DEE6408}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CDF6E09-493D-4FD9-A9C4-A19BE146D75E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CDF6E09-493D-4FD9-A9C4-A19BE146D75E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CDF6E09-493D-4FD9-A9C4-A19BE146D75E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CDF6E09-493D-4FD9-A9C4-A19BE146D75E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

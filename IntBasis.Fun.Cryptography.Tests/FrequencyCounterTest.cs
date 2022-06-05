@@ -91,12 +91,41 @@ public class FrequencyCounterTest
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
     }
 
+    [Theory(DisplayName = "FrequencyCounter: Sort Tokens by Frequency (Ignore whitespace)"), AutoMoq]
+    public void SortTokensByFrequencyNoWhitespace(FrequencyCounter frequencyCounter)
+    {
+        const string cipherText = "a b c c a c\n";
+        var options = new FrequencyAnalysisOptions { IgnoreWhitespace = true };
+
+        var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText, options);
+
+        frequencyAnalysis.TokenCount.Should().Equal(new Dictionary<char, int>
+        {
+            ['a'] = 2,
+            ['b'] = 1,
+            ['c'] = 3,
+        });
+        frequencyAnalysis.TokensByFrequency.Should().Equal('c', 'a', 'b');
+        frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+    }
+
     [Theory(DisplayName = "FrequencyCounter: Sort Bigrams by Frequency"), AutoMoq]
     public void SortBigramsByFrequency(FrequencyCounter frequencyCounter)
     {
         const string cipherText = "abc42abx42aby4242";
 
         var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText);
+
+        frequencyAnalysis.BigramsByFrequency.Should().Equal("42", "ab", "2a");
+    }
+
+    [Theory(DisplayName = "FrequencyCounter: Sort Bigrams by Frequency (Ignore whitespace)"), AutoMoq]
+    public void SortBigramsByFrequencyNoWhitespace(FrequencyCounter frequencyCounter)
+    {
+        const string cipherText = " abc  42  a b x 4 \n\n\n 2  a b y 4 2 4 2  ";
+        var options = new FrequencyAnalysisOptions { IgnoreWhitespace = true };
+
+        var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText, options);
 
         frequencyAnalysis.BigramsByFrequency.Should().Equal("42", "ab", "2a");
     }
@@ -111,15 +140,14 @@ Over many a quaint and curious volume of forgotten lore—
 As of some one gently rapping, rapping at my chamber door.
 ’Tis some visitor, I muttered, tapping at my chamber door—
     Only this and nothing more.";
+        var options = new FrequencyAnalysisOptions { IgnoreWhitespace = true };
 
-        var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText);
+        var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText, options);
 
-        frequencyAnalysis.TokensByFrequency.Take(6)
+        frequencyAnalysis.TokensByFrequency.Take(5)
                                             .Should()
-                                            .Equal(' ', 'e', 'n', 'a', 'o', 'r');
-        // Excluding bigrams with white space
-        frequencyAnalysis.BigramsByFrequency.Where(b => b.Trim().Length == 2)
-                                            .Take(5)
+                                            .Equal('e', 'n', 'a', 'o', 'r');
+        frequencyAnalysis.BigramsByFrequency.Take(5)
                                             .Should()
                                             .Equal("in", "re", "er", "or", "ng");
     }

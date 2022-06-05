@@ -33,6 +33,19 @@ public class FrequencyAnalysis
     }
 }
 
+public class FrequencyAnalysisOptions
+{
+    /// <summary>
+    /// If true, spaces, new-lines and other whitespace characters will not contribute to frequency analysis
+    /// </summary>
+    public bool IgnoreWhitespace { get; set; }
+
+    public static FrequencyAnalysisOptions Default => new()
+    {
+        IgnoreWhitespace = false
+    };
+}
+
 /// <summary>
 /// Performs basic Frequency Analysis on ciphertext by counting tokens.
 /// <see href="https://en.wikipedia.org/wiki/Frequency_analysis"/>
@@ -40,15 +53,18 @@ public class FrequencyAnalysis
 public class FrequencyCounter
 {
     /// <inheritdoc/>
-    public FrequencyAnalysis GetFrequencyAnalysis(string cipherText)
+    public FrequencyAnalysis GetFrequencyAnalysis(string cipherText, FrequencyAnalysisOptions? options = null)
     {
         if (cipherText is null)
             throw new ArgumentNullException(nameof(cipherText));
+        options ??= FrequencyAnalysisOptions.Default;
         var tokenCount = new Dictionary<char, int>();
         var bigramCount = new Dictionary<string, int>();
         char previousToken = default;
         foreach (char token in cipherText)
         {
+            if (options.IgnoreWhitespace && char.IsWhiteSpace(token))
+                continue;
             IncrementCounter(tokenCount, token);
             var bigram = $"{previousToken}{token}";
             IncrementCounter(bigramCount, bigram);

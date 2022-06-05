@@ -29,4 +29,10 @@
     <ProjectReference Include="..\IntBasis.Fun.Cryptography\IntBasis.Fun.Cryptography.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestData\GoldBug.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

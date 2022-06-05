@@ -1,5 +1,6 @@
 using FluentAssertions;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 
@@ -150,5 +151,30 @@ As of some one gently rapping, rapping at my chamber door.
         frequencyAnalysis.BigramsByFrequency.Take(5)
                                             .Should()
                                             .Equal("in", "re", "er", "or", "ng");
+    }
+
+    [Theory(DisplayName = "FrequencyCounter: The Gold Bug"), AutoMoq]
+    public void TheGoldBug(FrequencyCounter frequencyCounter)
+    {
+        var path = Path.Combine("TestData", "GoldBug.txt");
+        var cipherText = File.ReadAllText(path);
+        // "You observe there are no divisions between the words..." (though on 6 lines, so we should ignore newlines)
+        var options = new FrequencyAnalysisOptions { IgnoreWhitespace = true };
+
+        var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText, options);
+
+        // "My first step was to ascertain the perdominant letters,
+        // as well as the least frequent. Count all, I constructed a table, thus..."
+        var counts = frequencyAnalysis.TokenCount;
+        counts['8'].Should().Be(33);
+        counts[';'].Should().Be(26);
+        counts['.'].Should().Be(1);
+        // "Now, in English, the letter which most frequently occurs is e."
+        frequencyAnalysis.TokensByFrequency.Take(5).Should().Equal('8', ';', '4', '‡', ')');
+        // "Now, of all words in the language, 'the' is the most usual;
+        frequencyAnalysis.BigramsByFrequency.Take(3).Should().Equal(";4", "48", "6*");
+        // let us see, therefore, whether there are not repititions
+        // of any three characters"
+        // TODO: trigrams
     }
 }

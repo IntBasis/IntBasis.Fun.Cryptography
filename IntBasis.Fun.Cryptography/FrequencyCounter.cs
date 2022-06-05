@@ -4,7 +4,7 @@
 /// Performs basic Frequency Analysis on ciphertext by counting tokens.
 /// See <see href="https://en.wikipedia.org/wiki/Frequency_analysis">Frequency Analysis - Wikipedia</see>
 /// </summary>
-public class FrequencyCounter
+public class FrequencyCounter : IFrequencyCounter
 {
     /// <inheritdoc/>
     public FrequencyAnalysis GetFrequencyAnalysis(string cipherText, FrequencyAnalysisOptions? options = null)

@@ -21,6 +21,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokenCount.Should().BeEmpty();
         frequencyAnalysis.TokensByFrequency.Should().BeEmpty();
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: One Token"), AutoMoq]
@@ -33,6 +34,7 @@ public class FrequencyCounterTest
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Three Tokens"), AutoMoq]
@@ -47,6 +49,7 @@ public class FrequencyCounterTest
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a', 'b', 'c');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: One Repeat Token"), AutoMoq]
@@ -59,6 +62,7 @@ public class FrequencyCounterTest
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Multiple Repeat Tokens"), AutoMoq]
@@ -73,6 +77,7 @@ public class FrequencyCounterTest
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a', 'b', 'c');
         frequencyAnalysis.BigramsByFrequency.Should().Equal("ab", "bc");
+        frequencyAnalysis.TrigramsByFrequency.Should().Equal("abc");
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Tokens by Frequency"), AutoMoq]
@@ -90,6 +95,7 @@ public class FrequencyCounterTest
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('c', 'a', 'b');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Tokens by Frequency (Ignore whitespace)"), AutoMoq]
@@ -108,6 +114,7 @@ public class FrequencyCounterTest
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('c', 'a', 'b');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Bigrams by Frequency"), AutoMoq]
@@ -151,6 +158,9 @@ As of some one gently rapping, rapping at my chamber door.
         frequencyAnalysis.BigramsByFrequency.Take(5)
                                             .Should()
                                             .Equal("in", "re", "er", "or", "ng");
+        frequencyAnalysis.TrigramsByFrequency.Take(5)
+                                             .Should()
+                                             .Equal("ing", "app", "ppi", "pin", "ear");
     }
 
     [Theory(DisplayName = "FrequencyCounter: The Gold Bug"), AutoMoq]
@@ -170,11 +180,18 @@ As of some one gently rapping, rapping at my chamber door.
         counts[';'].Should().Be(26);
         counts['.'].Should().Be(1);
         // "Now, in English, the letter which most frequently occurs is e."
-        frequencyAnalysis.TokensByFrequency.Take(5).Should().Equal('8', ';', '4', '‡', ')');
+        frequencyAnalysis.TokensByFrequency.Take(5)
+                                           .Should()
+                                           .Equal('8', ';', '4', '‡', ')');
         // "Now, of all words in the language, 'the' is the most usual;
-        frequencyAnalysis.BigramsByFrequency.Take(3).Should().Equal(";4", "48", "6*");
+        frequencyAnalysis.BigramsByFrequency.Take(3)
+                                            .Should()
+                                            .Equal(";4", "48", "6*");
         // let us see, therefore, whether there are not repititions
         // of any three characters"
-        // TODO: trigrams
+        frequencyAnalysis.TrigramsByFrequency.Should()
+                                             .StartWith(";48") // the
+                                             .And
+                                             .Contain("5*†");  // and
     }
 }

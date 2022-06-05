@@ -6,10 +6,9 @@ namespace IntBasis.Fun.Cryptography.Tests;
 
 public class SubstitutionCipherServiceTest
 {
-    [Fact(DisplayName = "Substitution: Empty")]
-    public void Empty()
+    [Theory(DisplayName = "Substitution: Empty"), Integration]
+    public void Empty(SubstitutionCipherService subject)
     {
-        SubstitutionCipherService subject = new(new CharacterEncoderService());
         Dictionary<char, char> mapping = new();
 
         var output = subject.ApplyCharacterSubstitution("", mapping);
@@ -17,10 +16,9 @@ public class SubstitutionCipherServiceTest
         output.Should().BeEmpty();
     }
 
-    [Fact(DisplayName = "Substitution: One Matching Character")]
-    public void OneMatchingChar()
+    [Theory(DisplayName = "Substitution: One Matching Character"), Integration]
+    public void OneMatchingChar(SubstitutionCipherService subject)
     {
-        SubstitutionCipherService subject = new(new CharacterEncoderService());
         Dictionary<char, char> mapping = new()
         {
             ['a'] = 'x'
@@ -31,10 +29,9 @@ public class SubstitutionCipherServiceTest
         output.Should().Be("xxx");
     }
 
-    [Fact(DisplayName = "Substitution: Default Unmapped")]
-    public void DefaultUnmapped()
+    [Theory(DisplayName = "Substitution: Default Unmapped"), Integration]
+    public void DefaultUnmapped(SubstitutionCipherService subject)
     {
-        SubstitutionCipherService subject = new(new CharacterEncoderService());
         Dictionary<char, char> mapping = new()
         {
             ['a'] = 'x'
@@ -45,10 +42,9 @@ public class SubstitutionCipherServiceTest
         output.Should().Be("x--");
     }
 
-    [Fact(DisplayName = "Substitution: Unmapped")]
-    public void Unmapped()
+    [Theory(DisplayName = "Substitution: Unmapped"), Integration]
+    public void Unmapped(SubstitutionCipherService subject)
     {
-        SubstitutionCipherService subject = new(new CharacterEncoderService());
         Dictionary<char, char> mapping = new()
         {
             ['a'] = 'x',

@@ -7,7 +7,7 @@ namespace IntBasis.Fun.Cryptography.Tests
         [Fact]
         public void Test1()
         {
-
+            new Class1();
         }
     }
 }

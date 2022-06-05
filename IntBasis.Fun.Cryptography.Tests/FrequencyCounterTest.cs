@@ -19,6 +19,7 @@ public class FrequencyCounterTest
         var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis("");
         frequencyAnalysis.TokenCount.Should().BeEmpty();
         frequencyAnalysis.TokensByFrequency.Should().BeEmpty();
+        frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: One Token"), AutoMoq]
@@ -30,6 +31,7 @@ public class FrequencyCounterTest
             ['a'] = 1
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a');
+        frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Three Tokens"), AutoMoq]
@@ -43,6 +45,7 @@ public class FrequencyCounterTest
             ['c'] = 1,
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a', 'b', 'c');
+        frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: One Repeat Token"), AutoMoq]
@@ -54,6 +57,7 @@ public class FrequencyCounterTest
             ['a'] = 2
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a');
+        frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Multiple Repeat Tokens"), AutoMoq]
@@ -67,10 +71,11 @@ public class FrequencyCounterTest
             ['c'] = 2,
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('a', 'b', 'c');
+        frequencyAnalysis.BigramsByFrequency.Should().Equal("ab", "bc");
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Tokens by Frequency"), AutoMoq]
-    public void SortByFrequency(FrequencyCounter frequencyCounter)
+    public void SortTokensByFrequency(FrequencyCounter frequencyCounter)
     {
         const string cipherText = "abccac";
 
@@ -83,6 +88,17 @@ public class FrequencyCounterTest
             ['c'] = 3,
         });
         frequencyAnalysis.TokensByFrequency.Should().Equal('c', 'a', 'b');
+        frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
+    }
+
+    [Theory(DisplayName = "FrequencyCounter: Sort Bigrams by Frequency"), AutoMoq]
+    public void SortBigramsByFrequency(FrequencyCounter frequencyCounter)
+    {
+        const string cipherText = "abc42abx42aby4242";
+
+        var frequencyAnalysis = frequencyCounter.GetFrequencyAnalysis(cipherText);
+
+        frequencyAnalysis.BigramsByFrequency.Should().Equal("42", "ab", "2a");
     }
 
     [Theory(DisplayName = "FrequencyCounter: The Raven"), AutoMoq]
@@ -101,5 +117,10 @@ As of some one gently rapping, rapping at my chamber door.
         frequencyAnalysis.TokensByFrequency.Take(6)
                                             .Should()
                                             .Equal(' ', 'e', 'n', 'a', 'o', 'r');
+        // Excluding bigrams with white space
+        frequencyAnalysis.BigramsByFrequency.Where(b => b.Trim().Length == 2)
+                                            .Take(5)
+                                            .Should()
+                                            .Equal("in", "re", "er", "or", "ng");
     }
 }

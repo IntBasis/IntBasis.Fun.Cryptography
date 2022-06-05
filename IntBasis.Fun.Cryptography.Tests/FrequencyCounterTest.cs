@@ -1,12 +1,13 @@
+using FluentAssertions;
 using Xunit;
 
 namespace IntBasis.Fun.Cryptography.Tests;
 
 public class FrequencyCounterTest
 {
-    [Fact]
-    public void Test1()
+    [Theory(DisplayName = "FrequencyCounter: Construction"), AutoMoq]
+    public void Construction(FrequencyCounter frequencyCounter)
     {
-        new FrequencyCounter();
+        frequencyCounter.Should().NotBeNull();
     }
 }

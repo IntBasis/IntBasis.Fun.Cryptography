@@ -22,6 +22,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().BeEmpty();
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
         frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.Doubles.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: One Token"), AutoMoq]
@@ -35,6 +36,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().Equal('a');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
         frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.Doubles.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Three Tokens"), AutoMoq]
@@ -50,6 +52,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().Equal('a', 'b', 'c');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
         frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.Doubles.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: One Repeat Token"), AutoMoq]
@@ -63,6 +66,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().Equal('a');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
         frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.Doubles.Should().Equal("aa");
     }
 
     [Theory(DisplayName = "FrequencyCounter: Multiple Repeat Tokens"), AutoMoq]
@@ -78,6 +82,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().Equal('a', 'b', 'c');
         frequencyAnalysis.BigramsByFrequency.Should().Equal("ab", "bc");
         frequencyAnalysis.TrigramsByFrequency.Should().Equal("abc");
+        frequencyAnalysis.Doubles.Should().BeEmpty();
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Tokens by Frequency"), AutoMoq]
@@ -96,6 +101,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().Equal('c', 'a', 'b');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
         frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.Doubles.Should().Equal("cc");
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Tokens by Frequency (Ignore whitespace)"), AutoMoq]
@@ -115,6 +121,7 @@ public class FrequencyCounterTest
         frequencyAnalysis.TokensByFrequency.Should().Equal('c', 'a', 'b');
         frequencyAnalysis.BigramsByFrequency.Should().BeEmpty();
         frequencyAnalysis.TrigramsByFrequency.Should().BeEmpty();
+        frequencyAnalysis.Doubles.Should().Equal("cc");
     }
 
     [Theory(DisplayName = "FrequencyCounter: Sort Bigrams by Frequency"), AutoMoq]
@@ -161,6 +168,7 @@ As of some one gently rapping, rapping at my chamber door.
         frequencyAnalysis.TrigramsByFrequency.Take(5)
                                              .Should()
                                              .Equal("ing", "app", "ppi", "pin", "ear");
+        frequencyAnalysis.Doubles.Should().Equal("pp", "tt", "dd", "oo", "ff", "ss");
     }
 
     [Theory(DisplayName = "FrequencyCounter: The Gold Bug"), AutoMoq]
@@ -183,6 +191,9 @@ As of some one gently rapping, rapping at my chamber door.
         frequencyAnalysis.TokensByFrequency.Take(5)
                                            .Should()
                                            .Equal('8', ';', '4', '‡', ')');
+        // "To verify the supposition, let us observe if the 8 be seen
+        // often in couples-for e is doubled with great frequency in English
+        frequencyAnalysis.Doubles.Should().Equal("88", "‡‡", "))");
         // "Now, of all words in the language, 'the' is the most usual;
         frequencyAnalysis.BigramsByFrequency.Take(3)
                                             .Should()

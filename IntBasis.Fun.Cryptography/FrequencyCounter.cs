@@ -30,15 +30,23 @@ public class FrequencyAnalysis
     /// </summary>
     public IList<string> TrigramsByFrequency { get; }
 
+    /// <summary>
+    /// Ordered list of doubled tokens (two of same token appearing successively)
+    /// from most frequent to least frequent.
+    /// </summary>
+    public IList<string> Doubles { get; }
+
     public FrequencyAnalysis(IDictionary<char, int> tokenCount,
                              IList<char> tokensByFrequency,
                              IList<string> bigramsByFrequency,
-                             IList<string> trigramsByFrequency)
+                             IList<string> trigramsByFrequency,
+                             IList<string> doubles)
     {
         TokenCount = tokenCount ?? throw new ArgumentNullException(nameof(tokenCount));
         TokensByFrequency = tokensByFrequency ?? throw new ArgumentNullException(nameof(tokensByFrequency));
         BigramsByFrequency = bigramsByFrequency ?? throw new ArgumentNullException(nameof(bigramsByFrequency));
         TrigramsByFrequency = trigramsByFrequency ?? throw new ArgumentNullException(nameof(trigramsByFrequency));
+        Doubles = doubles ?? throw new ArgumentNullException(nameof(doubles));
     }
 }
 
@@ -71,6 +79,7 @@ public class FrequencyCounter
         var tokenCount = new Dictionary<char, int>();
         var bigramCount = new Dictionary<string, int>();
         var trigramCount = new Dictionary<string, int>();
+        var doubleCount = new Dictionary<string, int>();
         char previousToken = default;
         char previousPreviousToken = default;
         foreach (char token in cipherText)
@@ -82,6 +91,8 @@ public class FrequencyCounter
             IncrementCounter(bigramCount, bigram);
             var trigram = $"{previousPreviousToken}{previousToken}{token}";
             IncrementCounter(trigramCount, trigram);
+            if (token == previousToken)
+                IncrementCounter(doubleCount, bigram);
             previousPreviousToken = previousToken;
             previousToken = token;
         }
@@ -97,7 +108,14 @@ public class FrequencyCounter
                                              .OrderByDescending(kv => kv.Value)
                                              .Select(kv => kv.Key)
                                              .ToList();
-        return new FrequencyAnalysis(tokenCount, tokensByFrequency, bigramsByFrequency, trigramsByFrequency);
+        var doubles = doubleCount.OrderByDescending(kv => kv.Value)
+                                          .Select(kv => kv.Key)
+                                          .ToList();
+        return new FrequencyAnalysis(tokenCount,
+                                     tokensByFrequency,
+                                     bigramsByFrequency,
+                                     trigramsByFrequency,
+                                     doubles);
     }
 
     private static void IncrementCounter<T>(Dictionary<T, int> tokenCount, T token) where T : notnull

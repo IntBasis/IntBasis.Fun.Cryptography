@@ -1,5 +1,15 @@
 ﻿namespace IntBasis.Fun.Cryptography;
 
+public class SubstitutionOptions
+{
+    public char DefaultForUnmapped { get; set; }
+
+    public static SubstitutionOptions Default => new()
+    {
+        DefaultForUnmapped = '-'
+    };
+}
+
 /// <summary>
 /// Substitutes one token for another to produce clear text or cypher text
 /// </summary>
@@ -12,8 +22,14 @@ public class SubstitutionCipherService
         this.characterEncoderService = characterEncoderService ?? throw new ArgumentNullException(nameof(characterEncoderService));
     }
 
-    public string ApplyCharacterSubstitution(string inputText, IDictionary<char, char> substitutionMapping)
+    public string ApplyCharacterSubstitution(string inputText, IDictionary<char, char> substitutionMapping, SubstitutionOptions? options = null)
     {
-        return characterEncoderService.Encode(inputText, c => substitutionMapping[c]);
+        options ??= SubstitutionOptions.Default;
+        return characterEncoderService.Encode(inputText, token =>
+        {
+            if (substitutionMapping.ContainsKey(token))
+                return substitutionMapping[token];
+            return options.DefaultForUnmapped;
+        });
     }
 }

@@ -96,26 +96,25 @@ public class FrequencyCounter
             previousPreviousToken = previousToken;
             previousToken = token;
         }
-        var tokensByFrequency = tokenCount.OrderByDescending(kv => kv.Value)
-                                          .Select(kv => kv.Key)
-                                          .ToList();
+        var tokensByFrequency = OrderByCount(tokenCount);
         // Exclude n-grams that occur only once because they have no value
-        var bigramsByFrequency = bigramCount.Where(kv => kv.Value > 1)
-                                            .OrderByDescending(kv => kv.Value)
-                                            .Select(kv => kv.Key)
-                                            .ToList();
-        var trigramsByFrequency = trigramCount.Where(kv => kv.Value > 1)
-                                             .OrderByDescending(kv => kv.Value)
-                                             .Select(kv => kv.Key)
-                                             .ToList();
-        var doubles = doubleCount.OrderByDescending(kv => kv.Value)
-                                          .Select(kv => kv.Key)
-                                          .ToList();
+        var bigramsByFrequency = OrderByCount(bigramCount, greaterThanOne: true);
+        var trigramsByFrequency = OrderByCount(trigramCount, greaterThanOne: true);
+        var doubles = OrderByCount(doubleCount);
         return new FrequencyAnalysis(tokenCount,
                                      tokensByFrequency,
                                      bigramsByFrequency,
                                      trigramsByFrequency,
                                      doubles);
+    }
+
+    private static List<T> OrderByCount<T>(IEnumerable<KeyValuePair<T, int>> counts, bool greaterThanOne = false) where T : notnull
+    {
+        if (greaterThanOne)
+            counts = counts.Where(kv => kv.Value > 1);
+        return counts.OrderByDescending(kv => kv.Value)
+                     .Select(kv => kv.Key)
+                     .ToList();
     }
 
     private static void IncrementCounter<T>(Dictionary<T, int> tokenCount, T token) where T : notnull
